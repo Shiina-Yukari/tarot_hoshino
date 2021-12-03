@@ -161,7 +161,7 @@ meanings_decide = {
     "第一张牌": "代表目前问卜者的状况以及问题的现况",
     "第二张牌": "代表A路线本身未来的状况",
     "第三张牌": "代表B路线本身未来的状况",
-    "第四张牌": "代表选择A后问卜者未来的发展趋势"
+    "第四张牌": "代表选择A后问卜者未来的发展趋势",
 	"第五张牌": "代表选择B后问卜者未来的发展趋势"
 }
 
@@ -173,7 +173,7 @@ meanings_element = {
 }
 
 fd = os.path.dirname(__file__)
-path ='/root/Bot_Master/HoshinoBot-master/hoshino/modules/tarot/assets/' #请修改为自己的assets path，注意windows斜杠转义
+path ='root/Bot_Master/HoshinoBot-master/hoshino/modules/tarot/assets/' #请修改为自己的assets path，注意windows斜杠转义
 # path ='C:\\Users\\Administrator\\HoshinoBot\\hoshino\\modules\\tarot\\assets\\' windows路径格式参考
 CHAIN_REPLY = True #是否启用转发模式
 
@@ -236,7 +236,7 @@ async def send_playerInfo(bot, ev):
 @sv.on_fullmatch(('塔罗牌二择一'))
 async def send_playerInfo(bot, ev):
     await bot.send(ev,'请稍等，正在洗牌中')  
-    indices =random.sample(range(1,78), 4)
+    indices =random.sample(range(1,78), 5)
     card_keys = list(cards.keys())
     shuffle(card_keys)
     chain = []
