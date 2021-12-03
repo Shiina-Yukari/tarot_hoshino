@@ -157,15 +157,23 @@ cards = {
     }
 }
 
-meanings = {
-    "第一张牌": "代表过去，即已经发生的事",
-    "第二张牌": "代表问题导致的局面",
-    "第三张牌": "表示困难可能有的解决方法",
-    "切牌": "表示问卜者的主观想法"
+meanings_decide = {
+    "第一张牌": "代表目前问卜者的状况以及问题的现况",
+    "第二张牌": "代表A路线本身未来的状况",
+    "第三张牌": "代表B路线本身未来的状况",
+    "第四张牌": "代表选择A后问卜者未来的发展趋势"
+	"第五张牌": "代表选择B后问卜者未来的发展趋势"
+}
+
+meanings_element = {
+    "火牌": "代表对问卜者行动方面的建议",
+    "气牌": "代表对问卜者言语方面的建议",
+    "水牌": "代表对问卜者情绪方面的建议",
+    "土牌": "代表对问卜者物质方面的建议"
 }
 
 fd = os.path.dirname(__file__)
-# path ='/root/HoshinoBot/hoshino/modules/tarot/assets/' #请修改为自己的assets path，注意windows斜杠转义
+path ='/root/Bot_Master/HoshinoBot-master/hoshino/modules/tarot/assets/' #请修改为自己的assets path，注意windows斜杠转义
 # path ='C:\\Users\\Administrator\\HoshinoBot\\hoshino\\modules\\tarot\\assets\\' windows路径格式参考
 CHAIN_REPLY = True #是否启用转发模式
 
@@ -173,7 +181,7 @@ sv = Service('tarot', visible= True, enable_on_default= True, bundle='塔罗牌'
 塔罗牌
 '''.strip())
 
-@sv.on_fullmatch(('塔罗牌'))
+@sv.on_fullmatch(('塔罗牌四要素'))
 async def send_playerInfo(bot, ev):
     await bot.send(ev,'请稍等，正在洗牌中')  
     indices =random.sample(range(1,78), 4)
@@ -184,18 +192,18 @@ async def send_playerInfo(bot, ev):
         sv.logger.info(f'第{count}轮')	
         index = int(indices[count])
         card_key = card_keys[index-1]
-        meaning_key = list(meanings.keys())[count]
-        meaning_value = meanings[meaning_key]
-        img_path = os.path.join(fd, "assets", f"{card_key}.jpg")
+        meaning_key = list(meanings_element.keys())[count]
+        meaning_value = meanings_element[meaning_key]
+        img_path = os.path.join(path, f"{card_key}.jpg")
         image_file = f"file:///{img_path}"
 
         # 特殊规则：愚者有两张
         if card_key == '愚者':
             rand = randint(1, 2)
-            rand_path = os.path.join(fd, "assets", f"{card_key}{rand}.jpg")
+            rand_path = os.path.join(path, f"{card_key}{rand}.jpg")
             image_file = f"file:///{rand_path}.jpg"
 
-        # 特殊规则：小阿卡纳分正位逆位
+        # 特殊规则：大阿卡纳分正位逆位
         if isinstance(cards[card_key], dict):
             rand = randint(1, 2)
             if rand == 1:
@@ -223,6 +231,59 @@ async def send_playerInfo(bot, ev):
                 # sv.logger.info(chain)
         if CHAIN_REPLY and count == 3:
             await bot.send_group_forward_msg(group_id=ev['group_id'], messages=chain)
+
+
+@sv.on_fullmatch(('塔罗牌二择一'))
+async def send_playerInfo(bot, ev):
+    await bot.send(ev,'请稍等，正在洗牌中')  
+    indices =random.sample(range(1,78), 4)
+    card_keys = list(cards.keys())
+    shuffle(card_keys)
+    chain = []
+    for count in range(5):
+        sv.logger.info(f'第{count}轮')	
+        index = int(indices[count])
+        card_key = card_keys[index-1]
+        meaning_key = list(meanings_decide.keys())[count]
+        meaning_value = meanings_decide[meaning_key]
+        img_path = os.path.join(path, f"{card_key}.jpg")
+        image_file = f"file:///{img_path}"
+
+        # 特殊规则：愚者有两张
+        if card_key == '愚者':
+            rand = randint(1, 2)
+            rand_path = os.path.join(path, f"{card_key}{rand}.jpg")
+            image_file = f"file:///{rand_path}.jpg"
+
+        # 特殊规则：大阿卡纳分正位逆位
+        if isinstance(cards[card_key], dict):
+            rand = randint(1, 2)
+            if rand == 1:
+                card_value = cards[card_key]["正位"]
+                card_key += "（正位）"
+            else:
+                card_value = cards[card_key]["逆位"]
+                card_key += "（逆位）"
+        else:
+            card_value = cards[card_key]
+
+        if not CHAIN_REPLY:           
+            msg = []
+            msg.extend([meaning_key,"，",meaning_value,"\n",card_key,"，",card_value,"\n",f"[CQ:image,file={image_file}]"])
+            sv.logger.info(msg)
+            if count < 4:
+                await bot.send(ev, "".join(msg), at_sender=True)
+            else:
+                await bot.finish(ev, "".join(msg), at_sender=True)
+        else:
+            msg = []
+            msg.extend([meaning_key,"，",meaning_value,"\n",card_key,"，",card_value,"\n"])
+            if count < 5:
+                await chain_reply(ev, chain, msg, image_file)
+                # sv.logger.info(chain)
+        if CHAIN_REPLY and count == 4:
+            await bot.send_group_forward_msg(group_id=ev['group_id'], messages=chain)
+
 
 async def chain_reply(ev, chain, msg, image):
     msg = "".join(msg)
