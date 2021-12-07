@@ -14,5 +14,6 @@ git clone https://github.com/haha114514/tarot_hoshino.git
 # 用法
 
 
-群内发送 塔罗牌 即可使用。
+~~群内发送 塔罗牌 即可使用。~~
+添加了两种不同的牌阵，指令分别是<kbd>塔罗牌二择一</kbd>和<kbd>塔罗牌四要素</kbd>
 
