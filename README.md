@@ -1,7 +1,7 @@
 # tarot_hoshinot
 hoshinobot 塔罗牌插件，灵感来自于repo https://github.com/loli-fish/destiny_tarrot-CQnonebot
 
-***从[@haha114514的版本](https://github.com/haha114514/tarot_hoshino) fork过来然后魔改了一堆***<sub>（加牌阵，统一格式，修复发图功能之类的）</sub>***，因为改得乱七八糟所以就不pull request了……***
+***从[@haha114514的版本](https://github.com/haha114514/tarot_hoshino) fork过来然后魔改了一堆***<sub>~~（加牌阵，统一格式，修复发图功能之类的）~~</sub>***，因为改得乱七八糟所以就不pull request了……***
 # 安装方法
 
 在 HoshinoBot\hoshino\modules 目录下使用以下命令拉取本项目
